@@ -10,12 +10,34 @@ import java.time.ZonedDateTime;
 public class ApiExceptionHandler {
     @ExceptionHandler(value = {ResourceNotFoundException.class})
     public ResponseEntity<Object> handleResourceNotFound(ResourceNotFoundException e){
-        HttpStatus conflict = HttpStatus.NOT_FOUND;
+        HttpStatus notFound = HttpStatus.NOT_FOUND;
         ApiException apiException = new ApiException(
                 e.getMessage(),
-                conflict,
+                notFound,
                 ZonedDateTime.now(ZoneId.of("Z"))
         );
-        return new ResponseEntity<>(apiException, conflict);
+        return new ResponseEntity<>(apiException, notFound);
+    }
+    @ExceptionHandler(value = {UnprocessableEntityException.class})
+    public ResponseEntity<Object> handleEntityNotValid(UnprocessableEntityException e) {
+        HttpStatus unprocessableEntity = HttpStatus.UNPROCESSABLE_ENTITY;
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                unprocessableEntity,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+
+        return new ResponseEntity<>(apiException, unprocessableEntity);
+    }
+
+        @ExceptionHandler(value = {ConflictException.class})
+        public ResponseEntity<Object> handleConflictException(ConflictException e){
+            HttpStatus conflict = HttpStatus.CONFLICT;
+            ApiException apiException = new ApiException(
+                    e.getMessage(),
+                    conflict,
+                    ZonedDateTime.now(ZoneId.of("Z"))
+            );
+            return new ResponseEntity<>(apiException, conflict);
     }
 }

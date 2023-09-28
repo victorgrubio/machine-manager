@@ -5,8 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateMachine {
-    private Long serialNumber;
+public class MachineToEdit {
     private String model;
     private String category;
     private String location;

@@ -19,8 +19,8 @@ public class MachineController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createMachine(@RequestBody CreateMachine createMachine) {
-        machineService.createMachine(createMachine);
+    public void createMachine(@RequestBody MachineToCreate machineToCreate) {
+        machineService.createMachine(machineToCreate);
     }
     @DeleteMapping(path = "{serialNumber}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -28,8 +28,8 @@ public class MachineController {
         machineService.deleteMachine(serialNumber);
     }
     @PostMapping(path = "{serialNumber}")
-    public void editMachine(@PathVariable("serialNumber") Long serialNumber, @RequestBody EditMachine editMachine){
-        machineService.updateMachine(serialNumber,editMachine);
+    public void editMachine(@PathVariable("serialNumber") Long serialNumber, @RequestBody MachineToEdit machineToEdit){
+        machineService.updateMachine(serialNumber, machineToEdit);
     }
 
 }
