@@ -29,6 +29,10 @@ public class MachineService {
         machineRepository.save(machine);
     }
     public void deleteMachine(Long serialNumber){
+        boolean exists = machineRepository.existsById(serialNumber);
+        if (!exists){
+            throw new ResourceNotFoundException("Machine with id: " + serialNumber + " does not exist");
+        }
         machineRepository.deleteById(serialNumber);
     }
 
@@ -59,7 +63,7 @@ public class MachineService {
             throw new ConflictException("Machine already exists");
 
         if (machineToCreate.getSerialNumber() == null ||
-                machineToCreate.getSerialNumber() > 0)
+                machineToCreate.getSerialNumber() <= 0)
             throw new UnprocessableEntityException("Invalid serial number");
 
         if (machineToCreate.getModel() == null ||
