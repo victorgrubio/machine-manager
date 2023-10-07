@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -59,28 +60,25 @@ class AuthenticationControllerIntTest {
     }
 
     @Test
+    @WithMockUser(authorities = "ADMIN")
     void registerValidUser() throws Exception {
         UserToCreate userToCreate = new UserToCreate("firstname",
                 "lastname",
                 "username",
                 "password");
 
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+        mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userToCreate)))
-                .andExpect(status().isOk())
-                .andReturn();
-        String jwToken = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.token");
-        mockMvc.perform(MockMvcRequestBuilders
-                        .get("/api/v1/machines")
-                        .header("Authorization", "Bearer " + jwToken))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
+
         UserDetails userInDatabase = userService.loadUserByUsername(userToCreate.getUsername());
         assertEquals(userToCreate.getUsername(), userInDatabase.getUsername());
     }
 
     @Test
+    @WithMockUser(authorities = "ADMIN")
     void registerInvalidUser() throws Exception {
         UserToCreate userToCreate = new UserToCreate("firstname",
                 "lastname",

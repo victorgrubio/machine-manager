@@ -3,11 +3,10 @@ package com.mycopmany.myproject.machineapi.auth;
 import com.mycopmany.myproject.machineapi.user.UserToCreate;
 import com.mycopmany.myproject.machineapi.user.UserToLogin;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
@@ -15,10 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-
+    @PreAuthorize("hasAuthority('ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody UserToCreate userToCreate){
-        return ResponseEntity.ok(authenticationService.register(userToCreate));
+    public void register(@RequestBody UserToCreate userToCreate){
+        authenticationService.register(userToCreate);
     }
 
     @PostMapping("/authenticate")
