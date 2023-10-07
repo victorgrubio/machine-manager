@@ -37,7 +37,7 @@ class MachineServiceTest {
         mockMachines.add(machine);
         when(machineRepository.findAll()).thenReturn(mockMachines);
 
-        List<Machine> result = machineService.getMachines();
+        List<MachineToGet> result = machineService.getMachines();
 
         verify(machineRepository).findAll();
         assertNotNull(result);

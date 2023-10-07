@@ -13,7 +13,7 @@ public class MachineController {
     private final MachineService machineService;
 
     @GetMapping
-    public List<Machine> getMachines() {
+    public List<MachineToGet> getMachines() {
         return machineService.getMachines();
     }
 

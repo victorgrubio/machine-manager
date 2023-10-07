@@ -9,14 +9,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
 public class MachineService {
-    private MachineRepository machineRepository;
+    private final MachineRepository machineRepository;
 
-    public List<Machine> getMachines(){
-         return machineRepository.findAll();
+    public List<MachineToGet> getMachines(){
+         return machineRepository.findAll()
+                 .stream()
+                 .map(MachineToGet::fromModel)
+                 .collect(Collectors.toList());
     }
 
     public void createMachine(MachineToCreate machineToCreate){
@@ -31,7 +35,7 @@ public class MachineService {
     public void deleteMachine(Long serialNumber){
         boolean exists = machineRepository.existsById(serialNumber);
         if (!exists){
-            throw new ResourceNotFoundException("Machine with id: " + serialNumber + " does not exist");
+            throw new ResourceNotFoundException("Machine with serialNumber: " + serialNumber + " does not exist");
         }
         machineRepository.deleteById(serialNumber);
     }
@@ -62,19 +66,19 @@ public class MachineService {
         if (machineExists)
             throw new ConflictException("Machine already exists");
 
-        if (machineToCreate.getSerialNumber() == null ||
+        else if (machineToCreate.getSerialNumber() == null ||
                 machineToCreate.getSerialNumber() <= 0)
             throw new UnprocessableEntityException("Invalid serial number");
 
-        if (machineToCreate.getModel() == null ||
+        else if (machineToCreate.getModel() == null ||
                 machineToCreate.getModel().trim().isEmpty())
             throw new UnprocessableEntityException("Invalid model name");
 
-        if (machineToCreate.getCategory() == null ||
+        else if (machineToCreate.getCategory() == null ||
                 machineToCreate.getCategory().trim().isEmpty())
             throw new UnprocessableEntityException("Invalid category");
 
-        if (machineToCreate.getLocation() == null ||
+        else if (machineToCreate.getLocation() == null ||
                 machineToCreate.getLocation().trim().isEmpty())
             throw new UnprocessableEntityException("Invalid location");
     }

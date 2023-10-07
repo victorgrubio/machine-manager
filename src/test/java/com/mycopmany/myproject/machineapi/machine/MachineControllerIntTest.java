@@ -1,6 +1,5 @@
 package com.mycopmany.myproject.machineapi.machine;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,8 +20,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import javax.print.attribute.standard.Media;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -32,12 +29,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @Testcontainers
 @Transactional
-class MachineControllerTest {
+class MachineControllerIntTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @Container
-    private static MySQLContainer container = new MySQLContainer("mysql:8.1.0");
+    private static final MySQLContainer container = new MySQLContainer("mysql:8.1.0");
     @DynamicPropertySource
     public static void overrideProps(DynamicPropertyRegistry registry){
         registry.add("spring.datasource.url", container::getJdbcUrl);
@@ -120,7 +117,7 @@ class MachineControllerTest {
                         .delete("/api/v1/machines/{serialNumber}", serialNumberToDelete)
                         .header("Authorization", "Bearer " + "token"))
                 .andExpect(status().isNoContent());
-        List<Machine> machineList = machineService.getMachines();
+        List<MachineToGet> machineList = machineService.getMachines();
         assertTrue(machineList.isEmpty());
     }
 
@@ -131,7 +128,7 @@ class MachineControllerTest {
                         .delete("/api/v1/machines/{serialNumber}", serialNumberToDelete)
                         .header("Authorization", "Bearer " + "token"))
                 .andExpect(status().isNotFound());
-        List<Machine> machineList = machineService.getMachines();
+        List<MachineToGet> machineList = machineService.getMachines();
         assertTrue(machineList.isEmpty());
     }
 
@@ -154,7 +151,7 @@ class MachineControllerTest {
                         .header("Authorization", "Bearer " + "token"))
                 .andExpect(status().isOk());
 
-        Optional<Machine> machineInDatabase = machineService.getMachines().stream()
+        Optional<MachineToGet> machineInDatabase = machineService.getMachines().stream()
                 .filter(machine -> machine.getSerialNumber().equals(machineToCreate.getSerialNumber()))
                 .findAny();
 
