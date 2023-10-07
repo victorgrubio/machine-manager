@@ -11,7 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthenticatedUser implements UserDetails {
     private final User user;
-
     @Override
     public String getUsername() {
         return user.getUsername();

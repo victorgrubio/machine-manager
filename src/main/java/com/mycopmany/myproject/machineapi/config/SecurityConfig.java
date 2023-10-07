@@ -25,10 +25,13 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/api/v1/auth/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated());
+                        .requestMatchers("/api/v1/users/**")
+                        .hasAuthority("ADMIN")
+                        .requestMatchers("/api/v1/auth/**")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
+                );
 
         http.sessionManagement((requests) -> requests
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
