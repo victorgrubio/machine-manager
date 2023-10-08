@@ -3,6 +3,7 @@ package com.mycopmany.myproject.machineapi.config;
 import com.mycopmany.myproject.machineapi.user.UserRepository;
 import com.mycopmany.myproject.machineapi.user.UserServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @AllArgsConstructor
+@EnableCaching
 @Configuration
 public class ApplicationConfig {
     private final UserRepository userRepository;
