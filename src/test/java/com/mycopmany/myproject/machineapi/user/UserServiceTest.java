@@ -1,7 +1,6 @@
 package com.mycopmany.myproject.machineapi.user;
 
 import com.mycopmany.myproject.machineapi.exception.ResourceNotFoundException;
-import com.mycopmany.myproject.machineapi.machine.Machine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

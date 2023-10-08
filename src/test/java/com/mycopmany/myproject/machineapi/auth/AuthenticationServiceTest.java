@@ -4,7 +4,6 @@ import com.mycopmany.myproject.machineapi.config.JwtService;
 import com.mycopmany.myproject.machineapi.exception.ConflictException;
 import com.mycopmany.myproject.machineapi.exception.UnauthorizedException;
 import com.mycopmany.myproject.machineapi.user.*;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
