@@ -3,8 +3,8 @@ server:
         include-message: always
 spring:
     datasource:
-        password: password
         url: jdbc:mysql://localhost:3306/machinery
+        password: password
         username: root
     jpa:
         hibernate:
@@ -31,9 +31,7 @@ bucket4j:
           strategy: first
           http-response-body: "{ \"status\": 429, \"error\": \"Too Many Requests\", \"message\": \"You have exhausted your API Request Quota\" }"
           rate-limits:
-            - bandwidths:
-                - capacity: 100
-                  time: 1
-                  unit: hours
-
-
+              - bandwidths:
+                    - capacity: 100
+                      time: 1
+                      unit: hours

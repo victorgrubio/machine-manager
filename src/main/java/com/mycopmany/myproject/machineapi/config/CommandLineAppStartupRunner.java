@@ -4,11 +4,9 @@ import com.mycopmany.myproject.machineapi.user.Role;
 import com.mycopmany.myproject.machineapi.user.User;
 import com.mycopmany.myproject.machineapi.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-@Profile("!test")
 @Component
 public class CommandLineAppStartupRunner implements CommandLineRunner {
     private final UserRepository userRepository;

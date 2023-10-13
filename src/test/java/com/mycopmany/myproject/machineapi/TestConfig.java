@@ -1,9 +1,8 @@
-package com.mycopmany.myproject.machineapi.config;
+package com.mycopmany.myproject.machineapi;
 
 import com.mycopmany.myproject.machineapi.user.UserRepository;
 import com.mycopmany.myproject.machineapi.user.UserServiceImpl;
 import lombok.AllArgsConstructor;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,11 +14,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-@Profile("!test")
+@Profile("test")
 @AllArgsConstructor
-@EnableCaching
 @Configuration
-public class ApplicationConfig {
+public class TestConfig {
     private final UserRepository userRepository;
 
     @Bean
@@ -42,5 +40,6 @@ public class ApplicationConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
 }

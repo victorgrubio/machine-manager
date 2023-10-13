@@ -25,9 +25,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ActiveProfiles("test")
-@SpringBootTest
-@Testcontainers
 @Transactional
+@Testcontainers
+@SpringBootTest
 class UserControllerIntTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -73,10 +73,10 @@ class UserControllerIntTest {
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         UserToGet[] usersToGet = objectMapper.readValue(jsonResponse, UserToGet[].class);
 
-        assertEquals(1,usersToGet.length);
-        assertEquals(usersToGet[0].getFirstName(),userToCreate.getFirstName());
-        assertEquals(usersToGet[0].getLastName(),userToCreate.getLastName());
-        assertEquals(usersToGet[0].getUsername(),userToCreate.getUsername());
+        assertEquals(2,usersToGet.length);
+        assertEquals("admin",usersToGet[0].getFirstName());
+        assertEquals("admin",usersToGet[0].getLastName());
+        assertEquals("admin",usersToGet[0].getUsername());
 
     }
 
@@ -87,14 +87,7 @@ class UserControllerIntTest {
                 "lastname",
                 "username",
                 "password");
-
-        UserToCreate userToCreate2 = new UserToCreate(
-                "firstname2",
-                "lastname2",
-                "username2",
-                "password2");
         authenticationService.register(userToCreate1);
-        authenticationService.register(userToCreate2);
         Long idToDelete = 1L;
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/users/" + idToDelete )
@@ -107,7 +100,7 @@ class UserControllerIntTest {
     }
     @Test
     void deleteUserWhenDoesNotExist() throws Exception {
-        long idToDelete = 1L;
+        long idToDelete = 1293L;
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/users/" + idToDelete )
                         .header("Authorization", "Bearer " + "token"))
