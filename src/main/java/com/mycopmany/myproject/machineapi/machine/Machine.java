@@ -1,12 +1,10 @@
 package com.mycopmany.myproject.machineapi.machine;
 
-import com.mycopmany.myproject.machineapi.maintenance.MaintenanceRecord;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 
@@ -20,8 +18,6 @@ public class Machine {
     private String model;
     private String category;
     private String location;
-    @OneToMany(mappedBy = "machine", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MaintenanceRecord> maintenanceRecords;
 
     public Machine(Long serialNumber, String model, String category, String location) {
         this.serialNumber = serialNumber;

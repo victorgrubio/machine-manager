@@ -1,12 +1,10 @@
 package com.mycopmany.myproject.machineapi.user;
 
-import com.mycopmany.myproject.machineapi.maintenance.MaintenanceRecord;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
 import java.util.Objects;
 
 
@@ -25,8 +23,6 @@ public class User {
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MaintenanceRecord> maintenanceRecords;
 
     public User(String firstName, String lastName, String username, String password, Role role) {
         this.firstName = firstName;
