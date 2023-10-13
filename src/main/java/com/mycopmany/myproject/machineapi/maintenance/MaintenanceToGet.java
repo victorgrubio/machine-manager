@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MaintenanceRecordToGet {
+public class MaintenanceToGet {
     private Long id;
     private String maintenanceDate;
     private String title;
@@ -18,22 +18,22 @@ public class MaintenanceRecordToGet {
     private String technicianName;
     private Long machineId;
 
-    public static MaintenanceRecordToGet fromModel(MaintenanceRecord maintenanceRecord){
+    public static MaintenanceToGet fromModel(Maintenance maintenance){
         String technicianName = String.format("%s %s",
-                maintenanceRecord.getUser().getFirstName(),
-                maintenanceRecord.getUser().getLastName());
-        LocalDateTime maintenanceDate = maintenanceRecord.getMaintenanceDate();
+                maintenance.getUser().getFirstName(),
+                maintenance.getUser().getLastName());
+        LocalDateTime maintenanceDate = maintenance.getMaintenanceDate();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MM HH:mm:ss");
         String formattedMaintenanceDate = maintenanceDate.format(formatter);
 
 
-        return new MaintenanceRecordToGet(
-                maintenanceRecord.getId(),
+        return new MaintenanceToGet(
+                maintenance.getId(),
                 formattedMaintenanceDate,
-                maintenanceRecord.getTitle(),
-                maintenanceRecord.getDescription(),
+                maintenance.getTitle(),
+                maintenance.getDescription(),
                 technicianName,
-                maintenanceRecord.getMachine().getSerialNumber()
+                maintenance.getMachine().getSerialNumber()
         );
     }
 

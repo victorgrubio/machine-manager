@@ -12,29 +12,29 @@ import java.util.List;
 public class MaintenanceController {
     private final MaintenanceService maintenanceService;
     @GetMapping
-    public List<MaintenanceRecordToGet> getRecords() {
-        return maintenanceService.getRecords();
+    public List<MaintenanceToGet> getMaintenance() {
+        return maintenanceService.getAllMaintenance();
     }
 
     @GetMapping("/by-machine/{serialNumber}")
-    public List<MaintenanceRecordToGet> getMaintenanceRecordsBySerialNumber(@PathVariable Long serialNumber) {
-        return maintenanceService.getRecordsByMachine(serialNumber);
+    public List<MaintenanceToGet> getMaintenanceBySerialNumber(@PathVariable Long serialNumber) {
+        return maintenanceService.getMaintenanceByMachine(serialNumber);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createRecord(@RequestBody MaintenanceRecordToCreate maintenanceRecordToCreate){
-        maintenanceService.createRecord(maintenanceRecordToCreate);
+    public void createMaintenance(@RequestBody MaintenanceToCreate maintenanceToCreate){
+        maintenanceService.createMaintenance(maintenanceToCreate);
     }
 
-    @PostMapping(path = "{recordId}")
-    public void editRecord(@PathVariable Long recordId,@RequestBody MaintenanceRecordToEdit maintenanceRecordToEdit){
-        maintenanceService.editRecord(recordId, maintenanceRecordToEdit);
+    @PostMapping(path = "{id}")
+    public void editMaintenance(@PathVariable Long Id,@RequestBody MaintenanceToEdit maintenanceToEdit){
+        maintenanceService.editMaintenance(Id, maintenanceToEdit);
     }
 
-    @DeleteMapping(path = "{recordId}")
+    @DeleteMapping(path = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteRecord(@PathVariable("recordId") Long recordId){
-        maintenanceService.deleteRecord(recordId);
+    public void deleteMaintenance(@PathVariable("Id") Long Id){
+        maintenanceService.deleteMaintenance(Id);
     }
 }

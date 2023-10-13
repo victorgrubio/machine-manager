@@ -7,9 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class MaintenanceRecordToCreate {
+public class MaintenanceToEdit {
     private String title;
     private String description;
-    private Long machineId;
-
 }

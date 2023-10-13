@@ -39,25 +39,25 @@ class MaintenanceServiceTest {
     private MachineRepository machineRepository;
     private User user;
     private Machine machine;
-    private MaintenanceRecord maintenanceRecord;
+    private Maintenance maintenance;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
         user = new User("firstname", "lastname", "username", "password", Role.USER);
         machine = new Machine(123L, "model", "category", "location");
-        maintenanceRecord = new MaintenanceRecord("title", "description", user, machine);
+        maintenance = new Maintenance("title", "description", user, machine);
     }
 
     @Test
     void getRecords() {
         LocalDateTime maintenanceDate = LocalDateTime.now();
-        maintenanceRecord.setMaintenanceDate(maintenanceDate);
-        List<MaintenanceRecord> mockMaintenance = new ArrayList<>();
-        mockMaintenance.add(maintenanceRecord);
+        maintenance.setMaintenanceDate(maintenanceDate);
+        List<Maintenance> mockMaintenance = new ArrayList<>();
+        mockMaintenance.add(maintenance);
         when(maintenanceRepository.findAll()).thenReturn(mockMaintenance);
 
-        List<MaintenanceRecordToGet> result = maintenanceService.getRecords();
+        List<MaintenanceToGet> result = maintenanceService.getAllMaintenance();
 
         verify(maintenanceRepository).findAll();
         assertNotNull(result);
@@ -75,12 +75,12 @@ class MaintenanceServiceTest {
     @Test
     void getRecordsByMachine() {
         LocalDateTime maintenanceDate = LocalDateTime.now();
-        maintenanceRecord.setMaintenanceDate(maintenanceDate);
-        List<MaintenanceRecord> mockMaintenance = new ArrayList<>();
-        mockMaintenance.add(maintenanceRecord);
+        maintenance.setMaintenanceDate(maintenanceDate);
+        List<Maintenance> mockMaintenance = new ArrayList<>();
+        mockMaintenance.add(maintenance);
         when(machineRepository.existsById(123L)).thenReturn(true);
         when(maintenanceRepository.findByMachineSerialNumber(123L)).thenReturn(mockMaintenance);
-        List<MaintenanceRecordToGet> result = maintenanceService.getRecordsByMachine(123L);
+        List<MaintenanceToGet> result = maintenanceService.getMaintenanceByMachine(123L);
 
         verify(maintenanceRepository).findByMachineSerialNumber(123L);
         assertNotNull(result);
@@ -99,20 +99,20 @@ class MaintenanceServiceTest {
     void getRecordsByMachineWhenMachineNotExist() {
         when(machineRepository.existsById(123L)).thenReturn(false);
 
-        assertThrows(ResourceNotFoundException.class, () -> maintenanceService.getRecordsByMachine(123L));
+        assertThrows(ResourceNotFoundException.class, () -> maintenanceService.getMaintenanceByMachine(123L));
 
         verify(machineRepository).existsById(123L);
         verify(maintenanceRepository,times(0)).findByMachineSerialNumber(123L);
     }
 
     @Test
-    void createRecord() {
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+    void createMaintenance() {
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L
         );
-        maintenanceRecord.setMaintenanceDate(LocalDateTime.now());
+        maintenance.setMaintenanceDate(LocalDateTime.now());
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(user);
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -122,19 +122,19 @@ class MaintenanceServiceTest {
         when(userRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(user));
         when(machineRepository.findById(machine.getSerialNumber())).thenReturn(Optional.of(machine));
 
-        maintenanceService.createRecord(maintenanceRecordToCreate);
+        maintenanceService.createMaintenance(maintenanceToCreate);
 
-        verify(maintenanceRepository,times(1)).save(maintenanceRecord);
+        verify(maintenanceRepository,times(1)).save(maintenance);
 
     }
     @Test
-    void createRecordWhenMachineNotFound(){
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+    void createMaintenanceWhenMachineNotFound(){
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L
         );
-        maintenanceRecord.setMaintenanceDate(LocalDateTime.now());
+        maintenance.setMaintenanceDate(LocalDateTime.now());
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(user);
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -144,18 +144,18 @@ class MaintenanceServiceTest {
         when(userRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(user));
 
         assertThrows(ResourceNotFoundException.class,
-                () -> maintenanceService.createRecord(maintenanceRecordToCreate));
-        verify(maintenanceRepository,times(0)).save(maintenanceRecord);
+                () -> maintenanceService.createMaintenance(maintenanceToCreate));
+        verify(maintenanceRepository,times(0)).save(maintenance);
 
     }
     @Test
-    void createRecordWhenEmptyTitle() {
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+    void createMaintenanceWhenEmptyTitle() {
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "",
                 "description",
                 123L
         );
-        maintenanceRecord.setMaintenanceDate(LocalDateTime.now());
+        maintenance.setMaintenanceDate(LocalDateTime.now());
         AuthenticatedUser authenticatedUser = new AuthenticatedUser(user);
         Authentication authentication = mock(Authentication.class);
         SecurityContext securityContext = mock(SecurityContext.class);
@@ -166,57 +166,57 @@ class MaintenanceServiceTest {
         when(machineRepository.findById(machine.getSerialNumber())).thenReturn(Optional.of(machine));
 
         assertThrows(UnprocessableEntityException.class,
-                () ->maintenanceService.createRecord(maintenanceRecordToCreate));
-        verify(maintenanceRepository, times(0)).save(maintenanceRecord);
+                () ->maintenanceService.createMaintenance(maintenanceToCreate));
+        verify(maintenanceRepository, times(0)).save(maintenance);
 
     }
 
 
 
     @Test
-    void editRecordWhenExists() {
-        MaintenanceRecordToEdit maintenanceRecordToEdit = new MaintenanceRecordToEdit(
+    void editMaintenanceWhenExists() {
+        MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
                 "newTitle",
                 "newDescription"
         );
         Long idToEdit = 3L;
-        when(maintenanceRepository.findById(idToEdit)).thenReturn(Optional.of(maintenanceRecord));
+        when(maintenanceRepository.findById(idToEdit)).thenReturn(Optional.of(maintenance));
 
         assertDoesNotThrow(() -> maintenanceService
-                .editRecord(3L,maintenanceRecordToEdit));
+                .editMaintenance(3L, maintenanceToEdit));
 
-        assertEquals("newTitle", maintenanceRecord.getTitle());
-        assertEquals("newDescription", maintenanceRecord.getDescription());
+        assertEquals("newTitle", maintenance.getTitle());
+        assertEquals("newDescription", maintenance.getDescription());
     }
     @Test
-    void editRecordWhenDoesNotExist() {
-        MaintenanceRecordToEdit maintenanceRecordToEdit = new MaintenanceRecordToEdit(
+    void editMaintenanceWhenDoesNotExist() {
+        MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
                 "newTitle",
                 "new description"
         );
         Long idToEdit = 3L;
 
         assertThrows(ResourceNotFoundException.class,() -> maintenanceService
-                .editRecord(3L,maintenanceRecordToEdit));
+                .editMaintenance(3L, maintenanceToEdit));
 
-        assertEquals("title", maintenanceRecord.getTitle());
-        assertEquals("description", maintenanceRecord.getDescription());
+        assertEquals("title", maintenance.getTitle());
+        assertEquals("description", maintenance.getDescription());
     }
     @Test
-    void deleteRecordWhenIdExists() {
+    void deleteMaintenanceWhenIdExists() {
         when(maintenanceRepository.existsById(123L)).thenReturn(true);
 
-        assertDoesNotThrow(() -> maintenanceService.deleteRecord(123L));
+        assertDoesNotThrow(() -> maintenanceService.deleteMaintenance(123L));
 
         verify(maintenanceRepository, times(1)).deleteById(123L);
 
     }
 
     @Test
-    void deleteRecordWhenIdDoesNotExist() {
+    void deleteMaintenanceWhenIdDoesNotExist() {
         when(maintenanceRepository.existsById(123L)).thenReturn(false);
 
-        assertThrows(ResourceNotFoundException.class,() -> maintenanceService.deleteRecord(123L));
+        assertThrows(ResourceNotFoundException.class,() -> maintenanceService.deleteMaintenance(123L));
 
         verify(maintenanceRepository, times(0)).deleteById(123L);
 

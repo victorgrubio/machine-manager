@@ -90,13 +90,13 @@ class MaintenanceControllerIntTest {
     }
 
     @Test
-    void createAndGetMaintenanceRecord() throws Exception {
+    void createAndGetMaintenance() throws Exception {
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "model",
                 "category",
                 "location");
         machineService.createMachine(machineToCreate);
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L
@@ -105,7 +105,7 @@ class MaintenanceControllerIntTest {
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(maintenanceRecordToCreate)))
+                .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -121,8 +121,8 @@ class MaintenanceControllerIntTest {
                         .value("firstname lastname"));
     }
     @Test
-    void createRecordWhenMachineDoesNotExist() throws Exception {
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+    void createMaintenanceWhenMachineDoesNotExist() throws Exception {
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L
@@ -131,17 +131,17 @@ class MaintenanceControllerIntTest {
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(maintenanceRecordToCreate)))
+                        .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isNotFound());
     }
     @Test
-    void createRecordWhenTitleIsEmpty() throws Exception {
+    void createMaintenanceWhenTitleIsEmpty() throws Exception {
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "model",
                 "category",
                 "location");
         machineService.createMachine(machineToCreate);
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "",
                 "description",
                 123L);
@@ -150,18 +150,18 @@ class MaintenanceControllerIntTest {
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(maintenanceRecordToCreate)))
+                        .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
-    void createAndGetMaintenanceRecordsBySerialNumber() throws Exception{
+    void createAndGetMaintenanceBySerialNumber() throws Exception{
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "model",
                 "category",
                 "location");
         machineService.createMachine(machineToCreate);
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L);
@@ -169,7 +169,7 @@ class MaintenanceControllerIntTest {
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(maintenanceRecordToCreate)))
+                        .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(MockMvcRequestBuilders
@@ -197,8 +197,8 @@ class MaintenanceControllerIntTest {
     }
 
     @Test
-    void editRecordWhenExist() throws Exception {
-        MaintenanceRecordToEdit maintenanceRecordToEdit = new MaintenanceRecordToEdit(
+    void editMaintenanceWhenExist() throws Exception {
+        MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
                 "newTitle",
                 "newDescription"
         );
@@ -207,7 +207,7 @@ class MaintenanceControllerIntTest {
                 "category",
                 "location");
         machineService.createMachine(machineToCreate);
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L);
@@ -215,17 +215,17 @@ class MaintenanceControllerIntTest {
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(maintenanceRecordToCreate)))
+                        .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isCreated());
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/maintenance-records/" + 1L)
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(maintenanceRecordToEdit)))
+                        .content(objectMapper.writeValueAsString(maintenanceToEdit)))
                 .andExpect(status().isOk());
 
-        List<MaintenanceRecordToGet> result = maintenanceService.getRecordsByMachine(123L);
+        List<MaintenanceToGet> result = maintenanceService.getMaintenanceByMachine(123L);
         assertEquals(1,result.size());
         assertEquals("newTitle",result.get(0).getTitle());
         assertEquals("newDescription",result.get(0).getDescription());
@@ -233,8 +233,8 @@ class MaintenanceControllerIntTest {
         assertEquals("firstname lastname",result.get(0).getTechnicianName());
     }
     @Test
-    void editRecordWhenDoesNotExist() throws Exception {
-        MaintenanceRecordToEdit maintenanceRecordToEdit = new MaintenanceRecordToEdit(
+    void editMaintenanceWhenDoesNotExist() throws Exception {
+        MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
                 "newTitle",
                 "newDescription"
         );
@@ -244,19 +244,19 @@ class MaintenanceControllerIntTest {
                         .post("/api/v1/maintenance-records/" + idToEdit)
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(maintenanceRecordToEdit)))
+                        .content(objectMapper.writeValueAsString(maintenanceToEdit)))
                 .andExpect(status().isNotFound());
 
     }
 
     @Test
-    void deleteRecord() throws Exception {
+    void deleteMaintenance() throws Exception {
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "model",
                 "category",
                 "location");
         machineService.createMachine(machineToCreate);
-        MaintenanceRecordToCreate maintenanceRecordToCreate = new MaintenanceRecordToCreate(
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L);
@@ -264,7 +264,7 @@ class MaintenanceControllerIntTest {
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(maintenanceRecordToCreate)))
+                        .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isCreated());
         mockMvc.perform(MockMvcRequestBuilders
                 .delete("/api/v1/maintenance-records/" + 1L)
@@ -272,7 +272,7 @@ class MaintenanceControllerIntTest {
                 .andExpect(status().isNoContent());
     }
     @Test
-    void deleteRecordWhenDoesNotExist() throws Exception {
+    void deleteMaintenanceWhenDoesNotExist() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/maintenance-records/" + 1L)
                         .header("Authorization", "Bearer " + jwToken))
