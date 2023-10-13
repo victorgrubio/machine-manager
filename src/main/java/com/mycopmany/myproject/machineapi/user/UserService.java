@@ -20,12 +20,12 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteUser(Long userId){
-        boolean exists = userRepository.existsById(userId);
+    public void deleteUser(Long id){
+        boolean exists = userRepository.existsById(id);
         if (!exists){
-            throw new ResourceNotFoundException("User with id: " + userId + "does not exist");
+            throw new ResourceNotFoundException("User with id: " + id + "does not exist");
         }
-        userRepository.deleteById(userId);
+        userRepository.deleteById(id);
     }
 
 

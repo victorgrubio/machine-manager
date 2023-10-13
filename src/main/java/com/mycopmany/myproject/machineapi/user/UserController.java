@@ -11,14 +11,15 @@ import java.util.List;
 @RequestMapping("api/v1/users")
 public class UserController {
     private final UserService userService;
+
     @GetMapping
     public List<UserToGet> getUsers(){
         return userService.getUsers();
     }
 
-    @DeleteMapping(path = "{userId}")
+    @DeleteMapping(path = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteUser(@PathVariable("userId") Long userId){userService.deleteUser(userId);}
+    public void deleteUser(@PathVariable("id") Long Id){userService.deleteUser(Id);}
 
 
 }
