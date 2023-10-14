@@ -28,13 +28,13 @@ public class MaintenanceController {
     }
 
     @PostMapping(path = "{id}")
-    public void editMaintenance(@PathVariable Long Id,@RequestBody MaintenanceToEdit maintenanceToEdit){
+    public void editMaintenance(@PathVariable("id") Long Id,@RequestBody MaintenanceToEdit maintenanceToEdit){
         maintenanceService.editMaintenance(Id, maintenanceToEdit);
     }
 
     @DeleteMapping(path = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMaintenance(@PathVariable("Id") Long Id){
+    public void deleteMaintenance(@PathVariable("id") Long Id){
         maintenanceService.deleteMaintenance(Id);
     }
 }
