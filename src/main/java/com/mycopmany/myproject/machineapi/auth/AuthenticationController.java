@@ -2,6 +2,7 @@ package com.mycopmany.myproject.machineapi.auth;
 
 import com.mycopmany.myproject.machineapi.user.UserToCreate;
 import com.mycopmany.myproject.machineapi.user.UserToLogin;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +21,7 @@ public class AuthenticationController {
     public void register(@RequestBody UserToCreate userToCreate){
         authenticationService.register(userToCreate);
     }
-
+    @SecurityRequirements
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody UserToLogin userToLogin){
