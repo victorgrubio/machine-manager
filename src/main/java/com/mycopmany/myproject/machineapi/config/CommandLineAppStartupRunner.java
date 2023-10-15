@@ -1,5 +1,6 @@
 package com.mycopmany.myproject.machineapi.config;
 
+import com.mycopmany.myproject.machineapi.exception.ResourceNotFoundException;
 import com.mycopmany.myproject.machineapi.user.Role;
 import com.mycopmany.myproject.machineapi.user.User;
 import com.mycopmany.myproject.machineapi.user.UserRepository;
@@ -19,12 +20,14 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User admin = new User("admin",
-                "admin",
-                "admin",
-                passwordEncoder.encode("admin"),
-                Role.ADMIN);
-        userRepository.save(admin);
-
+        boolean exists = userRepository.existsByUsername("admin");
+        if (!exists){
+            User admin = new User("admin",
+                    "admin",
+                    "admin",
+                    passwordEncoder.encode("admin"),
+                    Role.ADMIN);
+            userRepository.save(admin);
+        }
     }
 }
