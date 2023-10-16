@@ -2,6 +2,7 @@ package com.mycopmany.myproject.machineapi.auth;
 
 import com.mycopmany.myproject.machineapi.user.UserToCreate;
 import com.mycopmany.myproject.machineapi.user.UserToLogin;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
+    @Operation(summary = "requires ADMIN role")
     @PreAuthorize("hasAuthority('ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
