@@ -1,0 +1,26 @@
+services:
+  app:
+    container_name: app
+    image: machine-manager:latest
+    build: .
+    restart: on-failure
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:3306/${DB_NAME}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysql
+
+  mysql:
+    container_name: mysqldb
+    image: mysql:8.1.0
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 3306:3306
+
+

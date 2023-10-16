@@ -1,11 +1,12 @@
 server:
+    port: ${PORT}
     error:
         include-message: always
 spring:
     datasource:
-        url: jdbc:mysql://localhost:3306/machinery
-        password: password
-        username: root
+        url: jdbc:${DB_URL}
+        password: ${DB_PASSWORD}
+        username: ${DB_USERNAME}
     jpa:
         hibernate:
             ddl-auto: update
