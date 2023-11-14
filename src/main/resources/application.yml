@@ -1,5 +1,6 @@
 server:
     port: ${PORT}
+    forward-headers-strategy: framework
     error:
         include-message: always
 spring:
