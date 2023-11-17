@@ -29,4 +29,4 @@ Steps to build docker image:
 5. Run the containers:
 
          docker compose up
-6. Once everything is successfully started up, the application should listen on:s      
+6. Once everything is successfully started up, the application should listen on: localhost:8080      
