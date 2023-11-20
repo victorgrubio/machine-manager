@@ -2,14 +2,11 @@ package com.mycopmany.myproject.machineapi.user;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mycopmany.myproject.machineapi.AbstractIntegrationTest;
 import com.mycopmany.myproject.machineapi.auth.AuthenticationService;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,17 +15,14 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
-@Transactional
-@Testcontainers
-@SpringBootTest
-class UserControllerIntTest {
+class UserControllerIntTest extends AbstractIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
     @Autowired
@@ -36,23 +30,27 @@ class UserControllerIntTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Container
-    private static final MySQLContainer container = new MySQLContainer("mysql:8.1.0");
+    private static final MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.1.0")
+            .withReuse(true);
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
 
     @DynamicPropertySource
-    public static void overrideProps(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
+    public static void overrideProps(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", mysql::getJdbcUrl);
+        registry.add("spring.datasource.username", mysql::getUsername);
+        registry.add("spring.datasource.password", mysql::getPassword);
 
+    }
+
+    static {
+        mysql.setPortBindings(List.of("3306:3306"));
+        mysql.start();
     }
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
@@ -66,17 +64,17 @@ class UserControllerIntTest {
         authenticationService.register(userToCreate);
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                .get("/api/v1/users")
-                .header("Authorization", "Bearer " + "token"))
+                        .get("/api/v1/users")
+                        .header("Authorization", "Bearer " + "token"))
                 .andExpect(status().isOk())
                 .andReturn();
         String jsonResponse = mvcResult.getResponse().getContentAsString();
         UserToGet[] usersToGet = objectMapper.readValue(jsonResponse, UserToGet[].class);
 
-        assertEquals(2,usersToGet.length);
-        assertEquals("admin",usersToGet[0].getFirstName());
-        assertEquals("admin",usersToGet[0].getLastName());
-        assertEquals("admin",usersToGet[0].getUsername());
+        assertEquals(2, usersToGet.length);
+        assertEquals("admin", usersToGet[0].getFirstName());
+        assertEquals("admin", usersToGet[0].getLastName());
+        assertEquals("admin", usersToGet[0].getUsername());
 
     }
 
@@ -90,7 +88,7 @@ class UserControllerIntTest {
         authenticationService.register(userToCreate1);
         Long idToDelete = 1L;
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/v1/users/" + idToDelete )
+                        .delete("/api/v1/users/" + idToDelete)
                         .header("Authorization", "Bearer " + "token"))
                 .andExpect(status().isNoContent());
 
@@ -98,11 +96,12 @@ class UserControllerIntTest {
         assertFalse(userExists);
         assertEquals(1, userRepository.count());
     }
+
     @Test
     void deleteUserWhenDoesNotExist() throws Exception {
         long idToDelete = 1293L;
         mockMvc.perform(MockMvcRequestBuilders
-                        .delete("/api/v1/users/" + idToDelete )
+                        .delete("/api/v1/users/" + idToDelete)
                         .header("Authorization", "Bearer " + "token"))
                 .andExpect(status().isNotFound());
 

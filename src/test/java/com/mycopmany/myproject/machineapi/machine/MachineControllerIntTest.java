@@ -1,23 +1,16 @@
 package com.mycopmany.myproject.machineapi.machine;
 
-import jakarta.transaction.Transactional;
+import com.mycopmany.myproject.machineapi.AbstractIntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
+
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -27,23 +20,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ActiveProfiles("test")
-@Transactional
-@Testcontainers
-@SpringBootTest
-class MachineControllerIntTest {
+
+class MachineControllerIntTest extends AbstractIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Container
-    private static final MySQLContainer container = new MySQLContainer("mysql:8.1.0");
-    @DynamicPropertySource
-    public static void overrideProps(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
-
-    }
     @Autowired
     private MachineService machineService;
     @Autowired
@@ -53,7 +33,6 @@ class MachineControllerIntTest {
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
 
@@ -92,7 +71,7 @@ class MachineControllerIntTest {
     }
 
     @Test
-    void createMachineWhenIdExists() throws Exception {
+    void createMachineWhenExists() throws Exception {
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "303E CR",
                 "Mini excavator",
@@ -109,10 +88,10 @@ class MachineControllerIntTest {
 
     @Test
     void deleteMachineWhenIdExists() throws Exception {
-    MachineToCreate machineToCreate = new MachineToCreate(123L,
-            "303E CR",
-            "Mini excavator",
-            "Storage");
+        MachineToCreate machineToCreate = new MachineToCreate(123L,
+                "303E CR",
+                "Mini excavator",
+                "Storage");
         machineService.createMachine(machineToCreate);
         Long serialNumberToDelete = 123L;
         mockMvc.perform(MockMvcRequestBuilders
@@ -124,19 +103,19 @@ class MachineControllerIntTest {
     }
 
     @Test
-    void deleteMachineWhenIdDoesNotExist() throws Exception {
+    void deleteMachineWhenDoesNotExist() throws Exception {
         Long serialNumberToDelete = 123L;
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/api/v1/machines/{serialNumber}", serialNumberToDelete)
                         .header("Authorization", "Bearer " + "token"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
         List<MachineToGet> machineList = machineService.getMachines();
         assertTrue(machineList.isEmpty());
     }
 
 
     @Test
-    void editMachine()  throws Exception{
+    void editMachine() throws Exception {
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "303E CR",
                 "Mini excavator",
@@ -158,9 +137,9 @@ class MachineControllerIntTest {
                 .findAny();
 
         assertTrue(machineInDatabase.isPresent());
-        assertEquals("New model",machineInDatabase.get().getModel());
-        assertEquals("New category",machineInDatabase.get().getCategory());
-        assertEquals("New location",machineInDatabase.get().getLocation());
+        assertEquals("New model", machineInDatabase.get().getModel());
+        assertEquals("New category", machineInDatabase.get().getCategory());
+        assertEquals("New location", machineInDatabase.get().getLocation());
     }
 
 

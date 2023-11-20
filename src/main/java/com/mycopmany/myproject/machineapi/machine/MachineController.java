@@ -1,5 +1,6 @@
 package com.mycopmany.myproject.machineapi.machine;
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ public class MachineController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createMachine(@RequestBody MachineToCreate machineToCreate) {
+    public void createMachine(@RequestBody @Valid MachineToCreate machineToCreate) {
         machineService.createMachine(machineToCreate);
     }
     @DeleteMapping(path = "{serialNumber}")

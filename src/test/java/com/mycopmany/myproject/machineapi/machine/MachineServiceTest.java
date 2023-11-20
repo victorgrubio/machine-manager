@@ -1,6 +1,5 @@
 package com.mycopmany.myproject.machineapi.machine;
 
-import com.mycopmany.myproject.machineapi.exception.ConflictException;
 import com.mycopmany.myproject.machineapi.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,7 +48,7 @@ class MachineServiceTest {
     }
 
     @Test
-    void createMachineWhenIdDoesNotExist() {
+    void createMachineWhenDoesNotExist() {
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "303E CR",
                 "Mini excavator",
@@ -58,7 +57,7 @@ class MachineServiceTest {
                 machineToCreate.getModel(),
                 machineToCreate.getCategory(),
                 machineToCreate.getLocation());
-        when(machineRepository.existsById(123L)).thenReturn(false);
+        when(machineRepository.existsBySerialNumber(123L)).thenReturn(false);
 
         assertDoesNotThrow(() -> machineService.createMachine(machineToCreate));
 
@@ -66,43 +65,17 @@ class MachineServiceTest {
     }
 
     @Test
-    void createMachineWhenIdExists() {
-        MachineToCreate machineToCreate = new MachineToCreate(123L,
-                "303E CR",
-                "Mini excavator",
-                "Storage");
-        Machine machine = new Machine(machineToCreate.getSerialNumber(),
-                machineToCreate.getModel(),
-                machineToCreate.getCategory(),
-                machineToCreate.getLocation());
-        when(machineRepository.existsById(123L)).thenReturn(true);
-
-        assertThrows(ConflictException.class,() -> machineService.createMachine(machineToCreate));
-
-        verify(machineRepository,times(0)).save(machine);
-    }
-
-    @Test
-    void deleteMachineWhenIdExists() {
-        when(machineRepository.existsById(123L)).thenReturn(true);
+    void deleteMachineWhenExists() {
+        when(machineRepository.existsBySerialNumber(123L)).thenReturn(true);
 
         assertDoesNotThrow(() -> machineService.deleteMachine(123L));
 
-        verify(machineRepository, times(1)).deleteById(123L);
+        verify(machineRepository, times(1)).deleteBySerialNumber(123L);
     }
 
 
     @Test
-    void deleteMachineWhenIdDoesNotExist() {
-        when(machineRepository.existsById(123L)).thenReturn(false);
-
-        assertThrows(ResourceNotFoundException.class,() -> machineService.deleteMachine(123L));
-
-        verify(machineRepository, times(0)).deleteById(123L);
-    }
-
-    @Test
-    void updateMachineWhenIdExists() {
+    void updateMachineWhenExists() {
         Machine machine = new Machine(123L,
                 "303E CR",
                 "Mini excavator",
@@ -110,7 +83,7 @@ class MachineServiceTest {
         MachineToEdit machineToEdit = new MachineToEdit("New machine",
                 "New category",
                 "New location");
-        when(machineRepository.findById(123L)).thenReturn(Optional.of(machine));
+        when(machineRepository.findBySerialNumber(123L)).thenReturn(Optional.of(machine));
 
         assertDoesNotThrow(() -> machineService
                 .updateMachine(123L,machineToEdit));
@@ -122,11 +95,11 @@ class MachineServiceTest {
     }
 
     @Test
-    void updateMachineWhenIdDoesNotExist() {
+    void updateMachineWhenDoesNotExist() {
         MachineToEdit machineToEdit = new MachineToEdit("New machine",
                 "New category",
                 "New location");
-        when(machineRepository.findById(123L)).thenReturn(Optional.empty());
+        when(machineRepository.findBySerialNumber(123L)).thenReturn(Optional.empty());
 
         assertThrows(ResourceNotFoundException.class,() -> machineService
                 .updateMachine(123L, machineToEdit));
@@ -141,7 +114,7 @@ class MachineServiceTest {
         MachineToEdit machineToEdit = new MachineToEdit(null,
                 "New category",
                 "New location");
-        when(machineRepository.findById(123L)).thenReturn(Optional.of(machine));
+        when(machineRepository.findBySerialNumber(123L)).thenReturn(Optional.of(machine));
 
         assertDoesNotThrow(() -> machineService
                 .updateMachine(123L, machineToEdit));
@@ -162,7 +135,7 @@ class MachineServiceTest {
         MachineToEdit machineToEdit = new MachineToEdit("New machine",
                 null,
                 "New location");
-        when(machineRepository.findById(123L)).thenReturn(Optional.of(machine));
+        when(machineRepository.findBySerialNumber(123L)).thenReturn(Optional.of(machine));
 
         assertDoesNotThrow(() -> machineService
                 .updateMachine(123L, machineToEdit));
@@ -182,7 +155,7 @@ class MachineServiceTest {
         MachineToEdit machineToEdit = new MachineToEdit("New machine",
                 "New category",
                 null);
-        when(machineRepository.findById(123L)).thenReturn(Optional.of(machine));
+        when(machineRepository.findBySerialNumber(123L)).thenReturn(Optional.of(machine));
 
         assertDoesNotThrow(() -> machineService
                 .updateMachine(123L, machineToEdit));

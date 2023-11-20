@@ -10,6 +10,6 @@ import lombok.Setter;
 public class MaintenanceToCreate {
     private String title;
     private String description;
-    private Long machineId;
+    private Long machineSerialNumber;
 
 }

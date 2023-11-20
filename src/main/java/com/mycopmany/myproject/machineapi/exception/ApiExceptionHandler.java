@@ -1,5 +1,6 @@
 package com.mycopmany.myproject.machineapi.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -51,4 +52,16 @@ public class ApiExceptionHandler {
         );
         return new ResponseEntity<>(apiException, unauthorized);
     }
+
+    @ExceptionHandler(value = {DataIntegrityViolationException.class})
+    public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        HttpStatus unauthorized = HttpStatus.CONFLICT;
+        ApiException apiException = new ApiException(
+                e.getMessage(),
+                unauthorized,
+                ZonedDateTime.now(ZoneId.of("Z"))
+        );
+        return new ResponseEntity<>(apiException, unauthorized);
+    }
+
 }

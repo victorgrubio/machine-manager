@@ -78,7 +78,7 @@ class MaintenanceServiceTest {
         maintenance.setMaintenanceDate(maintenanceDate);
         List<Maintenance> mockMaintenance = new ArrayList<>();
         mockMaintenance.add(maintenance);
-        when(machineRepository.existsById(123L)).thenReturn(true);
+        when(machineRepository.existsBySerialNumber(123L)).thenReturn(true);
         when(maintenanceRepository.findByMachineSerialNumber(123L)).thenReturn(mockMaintenance);
         List<MaintenanceToGet> result = maintenanceService.getMaintenanceByMachine(123L);
 
@@ -101,7 +101,7 @@ class MaintenanceServiceTest {
 
         assertThrows(ResourceNotFoundException.class, () -> maintenanceService.getMaintenanceByMachine(123L));
 
-        verify(machineRepository).existsById(123L);
+        verify(machineRepository).existsBySerialNumber(123L);
         verify(maintenanceRepository,times(0)).findByMachineSerialNumber(123L);
     }
 
@@ -120,7 +120,7 @@ class MaintenanceServiceTest {
         SecurityContextHolder.setContext(securityContext);
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(authenticatedUser);
         when(userRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(user));
-        when(machineRepository.findById(machine.getSerialNumber())).thenReturn(Optional.of(machine));
+        when(machineRepository.findBySerialNumber(machine.getSerialNumber())).thenReturn(Optional.of(machine));
 
         maintenanceService.createMaintenance(maintenanceToCreate);
 
@@ -163,7 +163,7 @@ class MaintenanceServiceTest {
         SecurityContextHolder.setContext(securityContext);
         when(SecurityContextHolder.getContext().getAuthentication().getPrincipal()).thenReturn(authenticatedUser);
         when(userRepository.findByUsername(authenticatedUser.getUsername())).thenReturn(Optional.of(user));
-        when(machineRepository.findById(machine.getSerialNumber())).thenReturn(Optional.of(machine));
+        when(machineRepository.findBySerialNumber(machine.getSerialNumber())).thenReturn(Optional.of(machine));
 
         assertThrows(UnprocessableEntityException.class,
                 () ->maintenanceService.createMaintenance(maintenanceToCreate));

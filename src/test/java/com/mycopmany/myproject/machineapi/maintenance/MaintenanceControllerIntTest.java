@@ -2,30 +2,21 @@ package com.mycopmany.myproject.machineapi.maintenance;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
+import com.mycopmany.myproject.machineapi.AbstractIntegrationTest;
 import com.mycopmany.myproject.machineapi.auth.AuthenticationService;
 import com.mycopmany.myproject.machineapi.machine.MachineService;
 import com.mycopmany.myproject.machineapi.machine.MachineToCreate;
 import com.mycopmany.myproject.machineapi.user.*;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.containers.MySQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
@@ -33,40 +24,23 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.*;
 
-@ActiveProfiles("test")
-@Transactional
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-@Testcontainers
-@SpringBootTest
-class MaintenanceControllerIntTest {
+
+class MaintenanceControllerIntTest extends AbstractIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
-
-    @Container
-    private static final MySQLContainer container = new MySQLContainer("mysql:8.1.0");
-
-    @DynamicPropertySource
-    public static void overrideProps(DynamicPropertyRegistry registry){
-        registry.add("spring.datasource.url", container::getJdbcUrl);
-        registry.add("spring.datasource.username", container::getUsername);
-        registry.add("spring.datasource.password", container::getPassword);
-
-    }
-
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
     @Autowired
     private MaintenanceService maintenanceService;
     @Autowired
     private MachineService machineService;
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private ObjectMapper objectMapper;
     private String jwToken;
+    private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() throws Exception {
-        MockitoAnnotations.openMocks(this);
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(springSecurity())
                 .build();
@@ -86,6 +60,7 @@ class MaintenanceControllerIntTest {
                 .andExpect(status().isOk())
                 .andReturn();
         jwToken = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.token");
+
 
     }
 
@@ -113,7 +88,6 @@ class MaintenanceControllerIntTest {
                         .header("Authorization", "Bearer " + jwToken))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
                         .value("description"))
@@ -178,7 +152,6 @@ class MaintenanceControllerIntTest {
                         .header("Authorization", "Bearer " + jwToken))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
                         .value("description"))
@@ -217,9 +190,9 @@ class MaintenanceControllerIntTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isCreated());
-
+        Long maintenanceId = maintenanceService.getAllMaintenance().get(0).getId();
         mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/maintenance-records/" + 1L)
+                        .post("/api/v1/maintenance-records/" + maintenanceId)
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(maintenanceToEdit)))
@@ -256,18 +229,22 @@ class MaintenanceControllerIntTest {
                 "category",
                 "location");
         machineService.createMachine(machineToCreate);
+
         MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
                 "title",
                 "description",
                 123L);
+
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
                 .andExpect(status().isCreated());
+        Long maintenanceId = maintenanceService.getAllMaintenance().get(0).getId();
+
         mockMvc.perform(MockMvcRequestBuilders
-                .delete("/api/v1/maintenance-records/" + 1L)
+                .delete("/api/v1/maintenance-records/" + maintenanceId)
                 .header("Authorization", "Bearer " + jwToken))
                 .andExpect(status().isNoContent());
     }

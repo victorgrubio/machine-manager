@@ -14,6 +14,9 @@ import java.util.Objects;
 @NoArgsConstructor
 public class Machine {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(unique = true)
     private Long serialNumber;
     private String model;
     private String category;
