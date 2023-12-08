@@ -4,7 +4,7 @@ COPY pom.xml .
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM openjdk:21
+FROM amazoncorretto:21.0.1-alpine3.18
 WORKDIR /app
 COPY --from=build app/target/machineapi-0.0.1.jar /machineapi-0.0.1.jar
 EXPOSE 8080
