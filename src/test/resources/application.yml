@@ -2,6 +2,9 @@ server:
   error:
     include-message: always
 spring:
+  liquibase:
+    enabled: true
+    change-log: classpath:liquibase/dbchangelog.xml
   datasource:
     url: jdbc:mysql://localhost:3306/machinery
     password: password
