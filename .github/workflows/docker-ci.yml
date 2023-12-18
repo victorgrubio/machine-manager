@@ -14,7 +14,9 @@ jobs:
     steps:
       - name: Shutdown Ubuntu MySQL (SUDO)
         run: sudo service mysql stop 
-         
+      - name: Create testcontainers.properties
+        run: echo "testcontainers.reuse.enable=true" > /home/runner/.testcontainers.properties
+
       - name: Checkout code
         uses: actions/checkout@v3
 
