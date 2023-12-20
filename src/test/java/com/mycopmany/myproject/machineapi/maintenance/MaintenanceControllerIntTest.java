@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -123,10 +124,10 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/maintenance-records")
-                        .with(csrf())
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isUnprocessableEntity());
     }
 
