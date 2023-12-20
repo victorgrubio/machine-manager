@@ -41,27 +41,29 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
-                .apply(springSecurity())
-                .build();
-        UserToCreate userToCreate = new UserToCreate(
-                "firstname",
-                "lastname",
-                "username",
-                "password"
-        );
-        authenticationService.register(userToCreate);
+        if (jwToken == null){
+            String username = "username";
+            String password = "password";
+            this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
+                    .apply(springSecurity())
+                    .build();
+            UserToCreate userToCreate = new UserToCreate(
+                    "firstname",
+                    "lastname",
+                    username,
+                    password
+            );
+            authenticationService.register(userToCreate);
 
-        UserToLogin userToLogin = new UserToLogin("username","password");
-        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
-                        .post("/api/v1/auth/authenticate")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userToLogin)))
-                .andExpect(status().isOk())
-                .andReturn();
-        jwToken = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.token");
-
-
+            UserToLogin userToLogin = new UserToLogin(username,password);
+            MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                            .post("/api/v1/auth/authenticate")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(userToLogin)))
+                    .andExpect(status().isOk())
+                    .andReturn();
+            jwToken = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.token");
+        }
     }
 
     @Test
