@@ -41,7 +41,6 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        if (jwToken == null){
             String username = "username";
             String password = "password";
             this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
@@ -63,7 +62,6 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                     .andExpect(status().isOk())
                     .andReturn();
             jwToken = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.token");
-        }
     }
 
     @Test

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tags:
-        description: 'Test scenario tags'
+        description: 'Sample input'
         required: false
         type: boolean
   pull_request:
