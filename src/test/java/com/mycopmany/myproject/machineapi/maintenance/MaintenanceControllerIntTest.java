@@ -130,8 +130,31 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                         .header("Authorization", "Bearer " + jwToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-                .andExpect(status().isUnprocessableEntity())
-                .andDo(MockMvcResultHandlers.print());
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
+    void createMaintenance() throws Exception {
+        MachineToCreate machineToCreate = new MachineToCreate(123L,
+                "model",
+                "category",
+                "location");
+        machineService.createMachine(machineToCreate);
+        MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+                "title",
+                "description",
+                123L
+        );
+
+        log.info("JWT token: " + jwToken);
+        mockMvc.perform(MockMvcRequestBuilders
+                        .post("/api/v1/maintenance-records")
+                        .header("Authorization", "Bearer " + jwToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isCreated());
     }
 
     @Test
