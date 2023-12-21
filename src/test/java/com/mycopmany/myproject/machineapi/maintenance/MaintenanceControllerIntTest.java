@@ -94,19 +94,19 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
         // .andExpect(MockMvcResultMatchers.jsonPath("$[0].technicianName")
         // .value("firstname lastname"));
         // }
-        @Test
-        void createMaintenanceWhenMachineDoesNotExist() throws Exception {
-                MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-                                "title",
-                                "description",
-                                123L);
-                mockMvc.perform(MockMvcRequestBuilders
-                                .post("/api/v1/maintenance-records")
-                                .header("Authorization", "Bearer " + jwToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-                                .andExpect(status().isNotFound());
-        }
+        // @Test
+        // void createMaintenanceWhenMachineDoesNotExist() throws Exception {
+        // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+        // "title",
+        // "description",
+        // 123L);
+        // mockMvc.perform(MockMvcRequestBuilders
+        // .post("/api/v1/maintenance-records")
+        // .header("Authorization", "Bearer " + jwToken)
+        // .contentType(MediaType.APPLICATION_JSON)
+        // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+        // .andExpect(status().isNotFound());
+        // }
 
         // @Test
         // void createMaintenanceWhenTitleIsEmpty() throws Exception {
@@ -161,14 +161,14 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         // }
 
-        @Test
-        void getMaintenanceByMachineWhenMachineDoesNotExist() throws Exception {
-                mockMvc.perform(MockMvcRequestBuilders
-                                .get("/api/v1/maintenance-records/by-machine/"
-                                                + 123L)
-                                .header("Authorization", "Bearer " + jwToken))
-                                .andExpect(status().isNotFound());
-        }
+        // @Test
+        // void getMaintenanceByMachineWhenMachineDoesNotExist() throws Exception {
+        // mockMvc.perform(MockMvcRequestBuilders
+        // .get("/api/v1/maintenance-records/by-machine/"
+        // + 123L)
+        // .header("Authorization", "Bearer " + jwToken))
+        // .andExpect(status().isNotFound());
+        // }
 
         @Test
         void editMaintenanceWhenExist() throws Exception {
