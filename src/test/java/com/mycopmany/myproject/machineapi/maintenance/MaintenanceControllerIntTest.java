@@ -142,7 +142,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                 "location");
         machineService.createMachine(machineToCreate);
         MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-                "title",
+                "",
                 "description",
                 123L
         );
