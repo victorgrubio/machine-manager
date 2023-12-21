@@ -23,6 +23,8 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(UserToCreate userToCreate) {
+        
+        System.out.println("register");
         validateUserToCreate(userToCreate);
         String encodedPassword = passwordEncoder.encode(userToCreate.getPassword());
         User user = new User(userToCreate.getFirstName(),
@@ -37,9 +39,16 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(UserToLogin userToLogin) {
+        System.out.println("AUTHenticate");
         Optional<User> userOptional = userRepository.findByUsername(userToLogin.getUsername());
+
+        System.out.println("AUTHenticat2e");
         User user = userOptional.orElseThrow(() -> new UnauthorizedException("Bad username or password"));
+
+        System.out.println("AUTHenticat3e");
         try {
+
+            System.out.println("AUTHentic4ate");
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), userToLogin.getPassword()));
 
