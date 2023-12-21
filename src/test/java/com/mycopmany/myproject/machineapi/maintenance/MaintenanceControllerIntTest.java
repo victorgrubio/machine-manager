@@ -172,6 +172,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         @Test
         void editMaintenanceWhenExist() throws Exception {
+                System.out.println(jwToken);
                 MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
                                 "newTitle",
                                 "newDescription");
@@ -208,6 +209,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         @Test
         void editMaintenanceWhenDoesNotExist() throws Exception {
+                System.out.println(jwToken);
                 MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
                                 "newTitle",
                                 "newDescription");
@@ -224,6 +226,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         @Test
         void deleteMaintenance() throws Exception {
+                System.out.println(jwToken);
                 MachineToCreate machineToCreate = new MachineToCreate(123L,
                                 "model",
                                 "category",
@@ -251,6 +254,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         @Test
         void deleteMaintenanceWhenDoesNotExist() throws Exception {
+                System.out.println(jwToken);
                 mockMvc.perform(MockMvcRequestBuilders
                                 .delete("/api/v1/maintenance-records/" + 1L)
                                 .header("Authorization", "Bearer " + jwToken))
