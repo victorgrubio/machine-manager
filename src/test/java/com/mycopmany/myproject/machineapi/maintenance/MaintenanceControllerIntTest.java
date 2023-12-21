@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -125,7 +127,8 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                 123L);
 
         log.info("JWT token: " + jwToken);
-        System.out.println(jwToken);
+        String jsonToken = Arrays.toString(Base64.getDecoder().decode(jwToken));
+
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
@@ -148,7 +151,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                 123L
         );
 
-        log.info("JWT token: " + jwToken);
+        log.info("JWT token: " + jwToken.toString());
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
