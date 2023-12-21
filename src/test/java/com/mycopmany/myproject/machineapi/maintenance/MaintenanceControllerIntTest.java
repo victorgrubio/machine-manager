@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.mycopmany.myproject.machineapi.AbstractIntegrationTest;
 import com.mycopmany.myproject.machineapi.auth.AuthenticationService;
+import com.mycopmany.myproject.machineapi.config.JwtService;
 import com.mycopmany.myproject.machineapi.machine.MachineService;
 import com.mycopmany.myproject.machineapi.machine.MachineToCreate;
 import com.mycopmany.myproject.machineapi.user.*;
@@ -11,6 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -35,6 +38,14 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
         private MachineService machineService;
         @Autowired
         private AuthenticationService authenticationService;
+        @Autowired
+        private UserRepository userRepository;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
+        @Autowired
+        private JwtService jwtService;
+        @Autowired
+        private AuthenticationManager authenticationManager;
         @Autowired
         private ObjectMapper objectMapper;
         private String jwToken;
