@@ -22,24 +22,27 @@ public class MaintenanceService {
     private final UserRepository userRepository;
     private final MachineRepository machineRepository;
 
-
-    public List<MaintenanceToGet> getAllMaintenance(){
+    public List<MaintenanceToGet> getAllMaintenance() {
         return maintenanceRepository.findAll()
                 .stream()
                 .map(MaintenanceToGet::fromModel)
                 .collect(Collectors.toList());
     }
-    public List<MaintenanceToGet> getMaintenanceByMachine(Long serialNumber){
+
+    public List<MaintenanceToGet> getMaintenanceByMachine(Long serialNumber) {
         boolean machineExists = machineRepository.existsBySerialNumber(serialNumber);
         if (!machineExists)
             throw new ResourceNotFoundException("Machine does not exist");
         return maintenanceRepository.findByMachineSerialNumber(serialNumber)
                 .stream()
-                .map(MaintenanceToGet::fromModel).
-                collect(Collectors.toList());
+                .map(MaintenanceToGet::fromModel).collect(Collectors.toList());
     }
-    public void createMaintenance(MaintenanceToCreate maintenanceToCreate){
-        AuthenticatedUser authenticatedUser = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    public void createMaintenance(MaintenanceToCreate maintenanceToCreate) {
+        System.out.println("BEFORE AUTH");
+        AuthenticatedUser authenticatedUser = (AuthenticatedUser) SecurityContextHolder.getContext().getAuthentication()
+                .getPrincipal();
+        System.out.println("AFTER AUTH");
         User user = userRepository.findByUsername(authenticatedUser.getUsername())
                 .orElseThrow(() -> new ResourceNotFoundException("Authenticated user not found"));
         Machine machine = machineRepository.findBySerialNumber(maintenanceToCreate.getMachineSerialNumber())
@@ -58,18 +61,19 @@ public class MaintenanceService {
     }
 
     @Transactional
-    public void editMaintenance(Long recordId, MaintenanceToEdit maintenanceToEdit){
+    public void editMaintenance(Long recordId, MaintenanceToEdit maintenanceToEdit) {
         Maintenance maintenance = maintenanceRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Maintenance record with id: " + recordId + " does not exist"));
         if (maintenanceToEdit.getTitle() != null &&
-                maintenanceToEdit.getTitle().trim().length() > 0){
+                maintenanceToEdit.getTitle().trim().length() > 0) {
             maintenance.setTitle(maintenanceToEdit.getTitle());
         }
         maintenance.setDescription(maintenanceToEdit.getDescription());
 
     }
-    public void deleteMaintenance(Long recordId){
+
+    public void deleteMaintenance(Long recordId) {
         boolean recordExists = maintenanceRepository.existsById(recordId);
         if (recordExists)
             maintenanceRepository.deleteById(recordId);

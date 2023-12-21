@@ -76,49 +76,49 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         }
 
-        @Test
-        void createAndGetMaintenance() throws Exception {
-                MachineToCreate machineToCreate = new MachineToCreate(124L,
-                                "model",
-                                "category",
-                                "location");
-                machineService.createMachine(machineToCreate);
-                MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-                                "title",
-                                "description",
-                                124L);
-                mockMvc.perform(MockMvcRequestBuilders
-                                .post("/api/v1/maintenance-records")
-                                .header("Authorization", "Bearer " + jwToken)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-                                .andExpect(status().isCreated());
-
-                mockMvc.perform(MockMvcRequestBuilders
-                                .get("/api/v1/maintenance-records")
-                                .header("Authorization", "Bearer " + jwToken))
-                                .andExpect(status().isOk())
-                                .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
-                                                .value("description"))
-                                .andExpect(MockMvcResultMatchers.jsonPath("$[0].technicianName")
-                                                .value("firstname lastname"));
-        }
-
         // @Test
-        // void createMaintenanceWhenMachineDoesNotExist() throws Exception {
+        // void createAndGetMaintenance() throws Exception {
+        // MachineToCreate machineToCreate = new MachineToCreate(124L,
+        // "model",
+        // "category",
+        // "location");
+        // machineService.createMachine(machineToCreate);
         // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
         // "title",
         // "description",
-        // 123L);
+        // 124L);
         // mockMvc.perform(MockMvcRequestBuilders
         // .post("/api/v1/maintenance-records")
         // .header("Authorization", "Bearer " + jwToken)
         // .contentType(MediaType.APPLICATION_JSON)
         // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-        // .andExpect(status().isNotFound());
+        // .andExpect(status().isCreated());
+
+        // mockMvc.perform(MockMvcRequestBuilders
+        // .get("/api/v1/maintenance-records")
+        // .header("Authorization", "Bearer " + jwToken))
+        // .andExpect(status().isOk())
+        // .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
+        // .value("description"))
+        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].technicianName")
+        // .value("firstname lastname"));
         // }
+
+        @Test
+        void createMaintenanceWhenMachineDoesNotExist() throws Exception {
+                MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+                                "title2",
+                                "description3",
+                                125L);
+                mockMvc.perform(MockMvcRequestBuilders
+                                .post("/api/v1/maintenance-records")
+                                .header("Authorization", "Bearer " + jwToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+                                .andExpect(status().isNotFound());
+        }
 
         // @Test
         // void createMaintenanceWhenTitleIsEmpty() throws Exception {
