@@ -30,8 +30,8 @@ public class AuthenticationService {
                 userToCreate.getUsername(),
                 encodedPassword,
                 Role.USER);
-        User savedUser = userRepository.save(user);
-        String jwToken = jwtService.generateToken(savedUser);
+        String jwToken = jwtService.generateToken(user);
+        userRepository.save(user);
         return new AuthenticationResponse(jwToken);
     }
 
