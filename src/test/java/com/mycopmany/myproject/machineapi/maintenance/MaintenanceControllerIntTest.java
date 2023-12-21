@@ -4,18 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.JsonPath;
 import com.mycopmany.myproject.machineapi.AbstractIntegrationTest;
 import com.mycopmany.myproject.machineapi.auth.AuthenticationService;
-import com.mycopmany.myproject.machineapi.config.SecurityConfig;
 import com.mycopmany.myproject.machineapi.machine.MachineService;
 import com.mycopmany.myproject.machineapi.machine.MachineToCreate;
 import com.mycopmany.myproject.machineapi.user.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,11 +26,9 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.*;
 
-// Import your web-security configuration (if any) or decorate with //
-// `@EnableMethodSecurity` (if using it)
-@ContextConfiguration(classes = { SecurityConfig.class })
-@AutoConfigureMockMvc
 class MaintenanceControllerIntTest extends AbstractIntegrationTest {
+        @Autowired
+        private WebApplicationContext webApplicationContext;
         @Autowired
         private MaintenanceService maintenanceService;
         @Autowired
@@ -44,14 +37,16 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
         private AuthenticationService authenticationService;
         @Autowired
         private ObjectMapper objectMapper;
-        @Autowired
-        private MockMvc mockMvc;
         private String jwToken;
+        private MockMvc mockMvc;
 
         @BeforeEach
         void setUp() throws Exception {
                 String username = "username";
                 String password = "password";
+                this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
+                                .apply(springSecurity())
+                                .build();
                 UserToCreate userToCreate = new UserToCreate(
                                 "firstname",
                                 "lastname",
@@ -66,11 +61,13 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                                 .content(objectMapper.writeValueAsString(userToLogin)))
                                 .andExpect(status().isOk())
                                 .andReturn();
+                // Wait for the asynchronous process to complete
+                mvcResult.getAsyncResult(1000);
                 jwToken = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.token");
+
         }
 
         @Test
-        @WithMockUser(username = "username", password = "password", roles = "USER")
         void createAndGetMaintenance() throws Exception {
                 MachineToCreate machineToCreate = new MachineToCreate(123L,
                                 "model",
@@ -100,19 +97,19 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                                                 .value("firstname lastname"));
         }
 
-        // @Test
-        // void createMaintenanceWhenMachineDoesNotExist() throws Exception {
-        // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-        // "title",
-        // "description",
-        // 123L);
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records")
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-        // .andExpect(status().isNotFound());
-        // }
+        @Test
+        void createMaintenanceWhenMachineDoesNotExist() throws Exception {
+                MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+                                "title",
+                                "description",
+                                123L);
+                mockMvc.perform(MockMvcRequestBuilders
+                                .post("/api/v1/maintenance-records")
+                                .header("Authorization", "Bearer " + jwToken)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+                                .andExpect(status().isNotFound());
+        }
 
         // @Test
         // void createMaintenanceWhenTitleIsEmpty() throws Exception {
