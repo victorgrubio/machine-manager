@@ -128,7 +128,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         log.info("JWT token: " + jwToken);
         String jsonToken = Arrays.toString(Base64.getDecoder().decode(jwToken));
-
+        log.info(jsonToken);
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/maintenance-records")
                         .header("Authorization", "Bearer " + jwToken)
