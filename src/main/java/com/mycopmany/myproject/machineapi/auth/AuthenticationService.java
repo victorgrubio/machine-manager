@@ -31,6 +31,7 @@ public class AuthenticationService {
                 encodedPassword,
                 Role.USER);
         String jwToken = jwtService.generateToken(user);
+        System.out.println("TOKEN " + jwToken);
         userRepository.save(user);
         return new AuthenticationResponse(jwToken);
     }
@@ -43,6 +44,7 @@ public class AuthenticationService {
                     new UsernamePasswordAuthenticationToken(user.getUsername(), userToLogin.getPassword()));
 
             String jwToken = jwtService.generateToken(user);
+            System.out.println("TOKEN " + jwToken);
 
             return new AuthenticationResponse(jwToken);
 
