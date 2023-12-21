@@ -52,6 +52,8 @@ public class AuthenticationService {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(user.getUsername(), userToLogin.getPassword()));
 
+
+            System.out.println("AUTHentic5ate");
             String jwToken = jwtService.generateToken(user);
             System.out.println("TOKEN " + jwToken);
 
