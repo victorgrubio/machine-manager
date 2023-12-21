@@ -61,8 +61,6 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                                 .content(objectMapper.writeValueAsString(userToLogin)))
                                 .andExpect(status().isOk())
                                 .andReturn();
-                // Wait for the asynchronous process to complete
-                mvcResult.getAsyncResult(1000);
                 jwToken = JsonPath.read(mvcResult.getResponse().getContentAsString(), "$.token");
 
         }

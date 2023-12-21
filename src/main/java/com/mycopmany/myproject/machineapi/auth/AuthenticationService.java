@@ -30,8 +30,8 @@ public class AuthenticationService {
                 userToCreate.getUsername(),
                 encodedPassword,
                 Role.USER);
-        String jwToken = jwtService.generateToken(user);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        String jwToken = jwtService.generateToken(savedUser);
         return new AuthenticationResponse(jwToken);
     }
 
@@ -40,19 +40,18 @@ public class AuthenticationService {
         User user = userOptional.orElseThrow(() -> new UnauthorizedException("Bad username or password"));
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(user.getUsername(), userToLogin.getPassword())
-            );
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), userToLogin.getPassword()));
 
-             String jwToken = jwtService.generateToken(user);
+            String jwToken = jwtService.generateToken(user);
 
             return new AuthenticationResponse(jwToken);
 
-        } catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             throw new UnauthorizedException("Bad username or password");
         }
     }
 
-    private void validateUserToCreate(UserToCreate userToCreate){
+    private void validateUserToCreate(UserToCreate userToCreate) {
         boolean userExists = userRepository.existsByUsername(userToCreate.getUsername());
         if (userExists)
             throw new ConflictException("User already exists");
@@ -72,6 +71,5 @@ public class AuthenticationService {
                 userToCreate.getPassword().trim().isEmpty())
             throw new UnprocessableEntityException("Invalid password");
     }
-
 
 }
