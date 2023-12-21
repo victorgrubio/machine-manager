@@ -11,6 +11,7 @@ import com.mycopmany.myproject.machineapi.user.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,9 +32,8 @@ import static org.junit.jupiter.api.Assertions.*;
 // Import your web-security configuration (if any) or decorate with //
 // `@EnableMethodSecurity` (if using it)
 @Import({ SecurityConfig.class })
+@AutoConfigureMockMvc
 class MaintenanceControllerIntTest extends AbstractIntegrationTest {
-        @Autowired
-        private WebApplicationContext webApplicationContext;
         @Autowired
         private MaintenanceService maintenanceService;
         @Autowired
@@ -42,16 +42,14 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
         private AuthenticationService authenticationService;
         @Autowired
         private ObjectMapper objectMapper;
-        private String jwToken;
+        @Autowired
         private MockMvc mockMvc;
+        private String jwToken;
 
         @BeforeEach
         void setUp() throws Exception {
                 String username = "username";
                 String password = "password";
-                this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
-                                .apply(springSecurity())
-                                .build();
                 UserToCreate userToCreate = new UserToCreate(
                                 "firstname",
                                 "lastname",
