@@ -54,18 +54,18 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        SecurityContextHolder.clearContext();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(springSecurity())
                 .build();
+        SecurityContextHolder.clearContext();
         UserToCreate userToCreate = new UserToCreate(
                 "firstname",
                 "lastname",
                 "username",
                 "password"
         );
-        SecurityContextHolder.getContext().setAuthentication(null);
         authenticationService.register(userToCreate);
-
         UserToLogin userToLogin = new UserToLogin("username", "password");
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/authenticate")
@@ -124,6 +124,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
     @Test
     void createMaintenanceWhenTitleIsEmpty() throws Exception {
+        SecurityContextHolder.clearContext();
         MachineToCreate machineToCreate = new MachineToCreate(123L,
                 "model",
                 "category",
