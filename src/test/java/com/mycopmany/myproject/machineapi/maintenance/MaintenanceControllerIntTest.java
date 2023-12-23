@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -44,6 +45,9 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
     private AuthenticationService authenticationService;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    AuthenticationManager authenticationManager;
+
     private String jwToken;
     private MockMvc mockMvc;
 
