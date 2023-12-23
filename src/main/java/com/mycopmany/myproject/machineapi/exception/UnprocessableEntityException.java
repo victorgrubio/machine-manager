@@ -9,4 +9,3 @@ public class UnprocessableEntityException extends RuntimeException {
         super(message, cause);
     }
 }
-
