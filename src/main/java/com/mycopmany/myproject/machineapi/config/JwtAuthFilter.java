@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -25,6 +27,7 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 public class JwtAuthFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
+    private static final Logger logger = LogManager.getLogger(JwtAuthFilter.class);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -40,7 +43,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
         jwToken = authHeader.substring(7);
         username = jwtService.extractUsername(jwToken);
+        logger.info(SecurityContextHolder.getContext().getAuthentication());
+        // logger.info(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
         if (username !=null && SecurityContextHolder.getContext().getAuthentication() == null){
+            logger.info("Authenticating new user {}", username);
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
             if(jwtService.isTokenValid(jwToken, userDetails)){
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
