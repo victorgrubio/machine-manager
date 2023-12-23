@@ -44,6 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         jwToken = authHeader.substring(7);
         username = jwtService.extractUsername(jwToken);
         logger.info(SecurityContextHolder.getContext().getAuthentication());
+        logger.info(SecurityContextHolder.getContext().getAuthentication().getClass());
         // logger.info(SecurityContextHolder.getContext().getAuthentication().isAuthenticated());
         if (username !=null && SecurityContextHolder.getContext().getAuthentication() == null){
             logger.info("Authenticating new user {}", username);
