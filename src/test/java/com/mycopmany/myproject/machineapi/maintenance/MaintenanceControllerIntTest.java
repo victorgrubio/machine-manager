@@ -55,11 +55,9 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        SecurityContextHolder.clearContext();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(springSecurity())
                 .build();
-        SecurityContextHolder.clearContext();
         UserToCreate userToCreate = new UserToCreate(
                 "firstname",
                 "lastname",
