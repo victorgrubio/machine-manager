@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @Slf4j
-@DirtiesContext
 class MaintenanceControllerIntTest extends AbstractIntegrationTest {
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -55,6 +54,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() throws Exception {
+        SecurityContextHolder.clearContext();
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(springSecurity())
                 .build();
@@ -65,6 +65,7 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                 "password"
         );
         authenticationService.register(userToCreate);
+        SecurityContextHolder.clearContext();
         UserToLogin userToLogin = new UserToLogin("username", "password");
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
                         .post("/api/v1/auth/authenticate")
