@@ -6,10 +6,12 @@ import com.mycopmany.myproject.machineapi.AbstractIntegrationTest;
 import com.mycopmany.myproject.machineapi.user.UserServiceImpl;
 import com.mycopmany.myproject.machineapi.user.UserToCreate;
 import com.mycopmany.myproject.machineapi.user.UserToLogin;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
@@ -39,6 +41,10 @@ class AuthenticationControllerIntTest extends AbstractIntegrationTest {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext)
                 .apply(springSecurity())
                 .build();
+    }
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
     }
 
     @Test
