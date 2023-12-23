@@ -21,7 +21,7 @@ public abstract class AbstractIntegrationTest {
             .withReuse(true);
 
     static {
-        mysql.setPortBindings(List.of("3306:3306"));
+        // mysql.setPortBindings(List.of("3306:3306"));
         mysql.start();
     }
 

@@ -1,10 +1,12 @@
 package com.mycopmany.myproject.machineapi.machine;
 
 import com.mycopmany.myproject.machineapi.AbstractIntegrationTest;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -35,7 +37,10 @@ class MachineControllerIntTest extends AbstractIntegrationTest {
     void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.webApplicationContext).build();
     }
-
+    @AfterEach
+    void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
     @Test
     void getMachines() throws Exception {
         MachineToCreate machineToCreate = new MachineToCreate(123L,
