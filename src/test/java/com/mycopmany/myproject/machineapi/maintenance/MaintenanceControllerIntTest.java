@@ -76,35 +76,35 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
 
         }
 
-        // @Test
-        // void createAndGetMaintenance() throws Exception {
-        // MachineToCreate machineToCreate = new MachineToCreate(124L,
-        // "model",
-        // "category",
-        // "location");
-        // machineService.createMachine(machineToCreate);
-        // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-        // "title",
-        // "description",
-        // 124L);
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records")
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-        // .andExpect(status().isCreated());
+         @Test
+         void createAndGetMaintenance() throws Exception {
+         MachineToCreate machineToCreate = new MachineToCreate(124L,
+         "model",
+         "category",
+         "location");
+         machineService.createMachine(machineToCreate);
+         MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+         "title",
+         "description",
+         124L);
+         mockMvc.perform(MockMvcRequestBuilders
+         .post("/api/v1/maintenance-records")
+         .header("Authorization", "Bearer " + jwToken)
+         .contentType(MediaType.APPLICATION_JSON)
+         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+         .andExpect(status().isCreated());
 
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .get("/api/v1/maintenance-records")
-        // .header("Authorization", "Bearer " + jwToken))
-        // .andExpect(status().isOk())
-        // .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
-        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
-        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
-        // .value("description"))
-        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].technicianName")
-        // .value("firstname lastname"));
-        // }
+         mockMvc.perform(MockMvcRequestBuilders
+         .get("/api/v1/maintenance-records")
+         .header("Authorization", "Bearer " + jwToken))
+         .andExpect(status().isOk())
+         .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
+         .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
+         .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
+         .value("description"))
+         .andExpect(MockMvcResultMatchers.jsonPath("$[0].technicianName")
+         .value("firstname lastname"));
+         }
 
         @Test
         void createMaintenanceWhenMachineDoesNotExist() throws Exception {
@@ -120,157 +120,157 @@ class MaintenanceControllerIntTest extends AbstractIntegrationTest {
                                 .andExpect(status().isNotFound());
         }
 
-        // @Test
-        // void createMaintenanceWhenTitleIsEmpty() throws Exception {
-        // MachineToCreate machineToCreate = new MachineToCreate(123L,
-        // "model",
-        // "category",
-        // "location");
-        // machineService.createMachine(machineToCreate);
-        // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-        // "",
-        // "description",
-        // 123L);
+         @Test
+         void createMaintenanceWhenTitleIsEmpty() throws Exception {
+         MachineToCreate machineToCreate = new MachineToCreate(123L,
+         "model",
+         "category",
+         "location");
+         machineService.createMachine(machineToCreate);
+         MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+         "",
+         "description",
+         123L);
 
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records")
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-        // .andDo(MockMvcResultHandlers.print())
-        // .andExpect(status().isUnprocessableEntity());
-        // }
+         mockMvc.perform(MockMvcRequestBuilders
+         .post("/api/v1/maintenance-records")
+         .header("Authorization", "Bearer " + jwToken)
+         .contentType(MediaType.APPLICATION_JSON)
+         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+         .andDo(MockMvcResultHandlers.print())
+         .andExpect(status().isUnprocessableEntity());
+         }
 
-        // @Test
-        // void createAndGetMaintenanceBySerialNumber() throws Exception {
-        // MachineToCreate machineToCreate = new MachineToCreate(123L,
-        // "model",
-        // "category",
-        // "location");
-        // machineService.createMachine(machineToCreate);
-        // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-        // "title",
-        // "description",
-        // 123L);
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records")
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-        // .andExpect(status().isCreated());
+         @Test
+         void createAndGetMaintenanceBySerialNumber() throws Exception {
+         MachineToCreate machineToCreate = new MachineToCreate(123L,
+         "model",
+         "category",
+         "location");
+         machineService.createMachine(machineToCreate);
+         MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+         "title",
+         "description",
+         123L);
+         mockMvc.perform(MockMvcRequestBuilders
+         .post("/api/v1/maintenance-records")
+         .header("Authorization", "Bearer " + jwToken)
+         .contentType(MediaType.APPLICATION_JSON)
+         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+         .andExpect(status().isCreated());
 
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .get("/api/v1/maintenance-records/by-machine/"
-        // + machineToCreate.getSerialNumber())
-        // .header("Authorization", "Bearer " + jwToken))
-        // .andExpect(status().isOk())
-        // .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
-        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
-        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
-        // .value("description"))
-        // .andExpect(MockMvcResultMatchers.jsonPath("$[0].technicianName")
-        // .value("firstname lastname"));
+         mockMvc.perform(MockMvcRequestBuilders
+         .get("/api/v1/maintenance-records/by-machine/"
+         + machineToCreate.getSerialNumber())
+         .header("Authorization", "Bearer " + jwToken))
+         .andExpect(status().isOk())
+         .andExpect(MockMvcResultMatchers.jsonPath("$.size()").value(1))
+         .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("title"))
+         .andExpect(MockMvcResultMatchers.jsonPath("$[0].description")
+         .value("description"))
+         .andExpect(MockMvcResultMatchers.jsonPath("$[0].technicianName")
+         .value("firstname lastname"));
 
-        // }
+         }
 
-        // @Test
-        // void getMaintenanceByMachineWhenMachineDoesNotExist() throws Exception {
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .get("/api/v1/maintenance-records/by-machine/"
-        // + 123L)
-        // .header("Authorization", "Bearer " + jwToken))
-        // .andExpect(status().isNotFound());
-        // }
+         @Test
+         void getMaintenanceByMachineWhenMachineDoesNotExist() throws Exception {
+         mockMvc.perform(MockMvcRequestBuilders
+         .get("/api/v1/maintenance-records/by-machine/"
+         + 123L)
+         .header("Authorization", "Bearer " + jwToken))
+         .andExpect(status().isNotFound());
+         }
 
-        // @Test
-        // void editMaintenanceWhenExist() throws Exception {
-        // System.out.println(jwToken);
-        // MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
-        // "newTitle",
-        // "newDescription");
-        // MachineToCreate machineToCreate = new MachineToCreate(123L,
-        // "model",
-        // "category",
-        // "location");
-        // machineService.createMachine(machineToCreate);
-        // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-        // "title",
-        // "description",
-        // 123L);
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records")
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-        // .andExpect(status().isCreated());
-        // Long maintenanceId = maintenanceService.getAllMaintenance().get(0).getId();
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records/" + maintenanceId)
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToEdit)))
-        // .andExpect(status().isOk());
+         @Test
+         void editMaintenanceWhenExist() throws Exception {
+         System.out.println(jwToken);
+         MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
+         "newTitle",
+         "newDescription");
+         MachineToCreate machineToCreate = new MachineToCreate(123L,
+         "model",
+         "category",
+         "location");
+         machineService.createMachine(machineToCreate);
+         MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+         "title",
+         "description",
+         123L);
+         mockMvc.perform(MockMvcRequestBuilders
+         .post("/api/v1/maintenance-records")
+         .header("Authorization", "Bearer " + jwToken)
+         .contentType(MediaType.APPLICATION_JSON)
+         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+         .andExpect(status().isCreated());
+         Long maintenanceId = maintenanceService.getAllMaintenance().get(0).getId();
+         mockMvc.perform(MockMvcRequestBuilders
+         .post("/api/v1/maintenance-records/" + maintenanceId)
+         .header("Authorization", "Bearer " + jwToken)
+         .contentType(MediaType.APPLICATION_JSON)
+         .content(objectMapper.writeValueAsString(maintenanceToEdit)))
+         .andExpect(status().isOk());
 
-        // List<MaintenanceToGet> result =
-        // maintenanceService.getMaintenanceByMachine(123L);
-        // assertEquals(1, result.size());
-        // assertEquals("newTitle", result.get(0).getTitle());
-        // assertEquals("newDescription", result.get(0).getDescription());
-        // assertEquals(123L, result.get(0).getMachineId());
-        // assertEquals("firstname lastname", result.get(0).getTechnicianName());
-        // }
+         List<MaintenanceToGet> result =
+         maintenanceService.getMaintenanceByMachine(123L);
+         assertEquals(1, result.size());
+         assertEquals("newTitle", result.get(0).getTitle());
+         assertEquals("newDescription", result.get(0).getDescription());
+         assertEquals(123L, result.get(0).getMachineId());
+         assertEquals("firstname lastname", result.get(0).getTechnicianName());
+         }
 
-        // @Test
-        // void editMaintenanceWhenDoesNotExist() throws Exception {
-        // System.out.println(jwToken);
-        // MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
-        // "newTitle",
-        // "newDescription");
-        // long idToEdit = 3L;
+         @Test
+         void editMaintenanceWhenDoesNotExist() throws Exception {
+         System.out.println(jwToken);
+         MaintenanceToEdit maintenanceToEdit = new MaintenanceToEdit(
+         "newTitle",
+         "newDescription");
+         long idToEdit = 3L;
 
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records/" + idToEdit)
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToEdit)))
-        // .andExpect(status().isNotFound());
+         mockMvc.perform(MockMvcRequestBuilders
+         .post("/api/v1/maintenance-records/" + idToEdit)
+         .header("Authorization", "Bearer " + jwToken)
+         .contentType(MediaType.APPLICATION_JSON)
+         .content(objectMapper.writeValueAsString(maintenanceToEdit)))
+         .andExpect(status().isNotFound());
 
-        // }
+         }
 
-        // @Test
-        // void deleteMaintenance() throws Exception {
-        // System.out.println(jwToken);
-        // MachineToCreate machineToCreate = new MachineToCreate(123L,
-        // "model",
-        // "category",
-        // "location");
-        // machineService.createMachine(machineToCreate);
+         @Test
+         void deleteMaintenance() throws Exception {
+         System.out.println(jwToken);
+         MachineToCreate machineToCreate = new MachineToCreate(123L,
+         "model",
+         "category",
+         "location");
+         machineService.createMachine(machineToCreate);
 
-        // MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
-        // "title",
-        // "description",
-        // 123L);
+         MaintenanceToCreate maintenanceToCreate = new MaintenanceToCreate(
+         "title",
+         "description",
+         123L);
 
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .post("/api/v1/maintenance-records")
-        // .header("Authorization", "Bearer " + jwToken)
-        // .contentType(MediaType.APPLICATION_JSON)
-        // .content(objectMapper.writeValueAsString(maintenanceToCreate)))
-        // .andExpect(status().isCreated());
-        // Long maintenanceId = maintenanceService.getAllMaintenance().get(0).getId();
+         mockMvc.perform(MockMvcRequestBuilders
+         .post("/api/v1/maintenance-records")
+         .header("Authorization", "Bearer " + jwToken)
+         .contentType(MediaType.APPLICATION_JSON)
+         .content(objectMapper.writeValueAsString(maintenanceToCreate)))
+         .andExpect(status().isCreated());
+         Long maintenanceId = maintenanceService.getAllMaintenance().get(0).getId();
 
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .delete("/api/v1/maintenance-records/" + maintenanceId)
-        // .header("Authorization", "Bearer " + jwToken))
-        // .andExpect(status().isNoContent());
-        // }
+         mockMvc.perform(MockMvcRequestBuilders
+         .delete("/api/v1/maintenance-records/" + maintenanceId)
+         .header("Authorization", "Bearer " + jwToken))
+         .andExpect(status().isNoContent());
+         }
 
-        // @Test
-        // void deleteMaintenanceWhenDoesNotExist() throws Exception {
-        // mockMvc.perform(MockMvcRequestBuilders
-        // .delete("/api/v1/maintenance-records/" + 1L)
-        // .header("Authorization", "Bearer " + jwToken))
-        // .andExpect(status().isNotFound());
+         @Test
+         void deleteMaintenanceWhenDoesNotExist() throws Exception {
+         mockMvc.perform(MockMvcRequestBuilders
+         .delete("/api/v1/maintenance-records/" + 1L)
+         .header("Authorization", "Bearer " + jwToken))
+         .andExpect(status().isNotFound());
 
-        // }
+         }
 }
